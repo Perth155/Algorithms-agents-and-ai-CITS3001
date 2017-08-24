@@ -7,8 +7,6 @@
 
 using namespace std;
 
-// compile : g++ PatternMatchAlgorithm.cpp -Wall -Werror -pedantic -std=c++11  -o pm
-
 /**
 * Print out the array, and then free its memory.
 */
@@ -165,14 +163,13 @@ int generalRabinKarp(string text, string pattern)
  * Find and return an array of longest proper prefixes for the pattern to be used for 
  * note: longestProperPrefix[i] is the longest prefix of pat[0..i] which is also a suffix of pat[0..i]
  */
-void findLongestProperPrefixArr(string pattern, vector<int> longestCommonPrefix)
+void findLongestProperPrefixArr(string pattern, int* longestCommonPrefix)
 {	
 	int i = 0; //keeps track of the pattern index.
 	int val = 0; //Length of prev. longest prefix suffix.
 	longestCommonPrefix[i] = 0;
 	i++;
 	int lenP = pattern.size();
-	cout << i << "  " << lenP <<endl;
 	while(i < lenP)
 	{
 		if(pattern[i] == pattern[val])
@@ -192,9 +189,6 @@ void findLongestProperPrefixArr(string pattern, vector<int> longestCommonPrefix)
 			}
 		}
 	}
-
-	//cout << longestCommonPrefix[1] << "   " << longestCommonPrefix[3] << "  " << longestCommonPrefix[4]<<endl;
-	printArr(longestCommonPrefix);
 }
 
 
@@ -208,9 +202,9 @@ void findLongestProperPrefixArr(string pattern, vector<int> longestCommonPrefix)
 */
 int algKnuthMorrisPratt(string text, string pattern)
 {
-	int pLen = pattern.length();
-	int tLen = text.length();
-	vector<int> prefixArr(pLen);
+	const int pLen = pattern.length();
+	const int tLen = text.length();
+	int* prefixArr = new int[pLen];
 
 	findLongestProperPrefixArr(pattern, prefixArr);
 	int q = 0; //stores num items matched.
@@ -224,14 +218,13 @@ int algKnuthMorrisPratt(string text, string pattern)
 		if(pattern[q] == text[i])
 			q++;
 		
-		cout <<". " <<q <<endl;
 		if(q == pLen)
 		{
 			rVec.push_back(i-pLen+1);
 			q = prefixArr[q-1];
 		}
 	}
-		
+	delete[] prefixArr;	
 	printArr(rVec);
 	return rVec.size();
 }
