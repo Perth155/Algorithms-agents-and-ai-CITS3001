@@ -15,7 +15,7 @@ void timePMA(std::string text, std::string pattern)
 	int k = naive(text, pattern);
 	clock_t end = clock();
 	double time_spent = (double)(end-begin)*1000.0/ CLOCKS_PER_SEC;	
-	std::cout << "* Naive algorithm matches found: " << k << " time: " << time_spent << "ms"<<std::endl;
+	std::cout << "* Naive algorithm => matches found: " << k << ". time: " << time_spent << "ms"<<std::endl;
 	std::cout << divider << std::endl;
 	
 
@@ -23,7 +23,7 @@ void timePMA(std::string text, std::string pattern)
 	k = generalRabinKarp(text, pattern);
 	end = clock();
 	time_spent = (double)(end-begin)*1000.0/ CLOCKS_PER_SEC;	
-	std::cout << "* Rabin-Karp algorithm matches found: " << k << " time: " << time_spent << "ms"<<std::endl;
+	std::cout << "* Rabin-Karp algorithm => matches found: " << k << ". time: " << time_spent << "ms"<<std::endl;
 	std::cout << divider << std::endl;
 
 
@@ -31,7 +31,7 @@ void timePMA(std::string text, std::string pattern)
 	k = algKnuthMorrisPratt(text, pattern);
 	end = clock();
 	time_spent = (double)(end-begin)*1000.0/ CLOCKS_PER_SEC;	
-	std::cout << "* Knuth-Morris-Pratt algorithm matches found: " << k << " time: " << time_spent << "ms"<<std::endl;
+	std::cout << "* Knuth-Morris-Pratt algorithm => matches found: " << k << ". time: " << time_spent << "ms"<<std::endl;
 	std::cout << divider << std::endl;
 
 

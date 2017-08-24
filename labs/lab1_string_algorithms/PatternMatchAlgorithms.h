@@ -6,6 +6,6 @@
 extern int naive(std::string text, std::string pattern);
 extern int generalRabinKarp(std::string text, std::string pattern);
 extern int algKnuthMorrisPratt(std::string text, std::string pattern);
-//extern int algBoyerMoore(std::string text, std::string pattern);
+extern int algBoyerMoore(std::string text, std::string pattern);
 
 #endif

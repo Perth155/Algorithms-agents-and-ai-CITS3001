@@ -3,7 +3,7 @@
 #include <string>
 
 // The number of char in input alphabet. 
-#define DIGIT 256;
+#define ASCII_CHARS 256;
 
 using namespace std;
 
@@ -106,7 +106,7 @@ int generalRabinKarp(string text, string pattern)
 	int p_bar = 0; //store hash val of pattern.
 	int t_bar = 0; //store hash val of text.
 	int prime = 151;
-	int d = DIGIT;
+	int d = ASCII_CHARS;
 	int h = 1;
 	int m = pattern.length();
 	int n = text.length();
@@ -228,3 +228,15 @@ int algKnuthMorrisPratt(string text, string pattern)
 	printArr(rVec);
 	return rVec.size();
 }
+
+
+
+
+/**
+ * An implementation of a basic Boyer-Moore algorithm using
+ * the bad-character heuristic.
+ */
+//int algBoyerMoore(string text, string pattern)
+//{
+//	
+//}
