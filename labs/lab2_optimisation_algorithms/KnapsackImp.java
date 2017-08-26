@@ -103,8 +103,5 @@ public class KnapsackImp implements Knapsack
 				
 			return (int)currentVal;
 		}
-
-
-
 }
 
