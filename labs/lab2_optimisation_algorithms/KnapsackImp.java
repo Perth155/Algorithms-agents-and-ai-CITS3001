@@ -8,8 +8,8 @@ public class KnapsackImp implements Knapsack
 {
 
 		/**
-		 * A private class used to store the index and the value to keep 
-		 * track of indices after being sorted.
+		 * A private class used to store the index and the value pair in an array to keep 
+		 * track of indices after array has being sorted.
 		 */
 		private class Pair implements Comparable<Pair>
 		{
@@ -35,7 +35,11 @@ public class KnapsackImp implements Knapsack
 		}
 
 		/**
-		 * implementation of 1-0 Knapsack.
+		 * implementation of 1-0 Knapsack using dynamic programming.
+		 * @param weights the array of weights of each type of product available.
+                 * @param values the array of values of each type of product available.
+                 * @param capacity the size of the knapsack
+                 * @return the greatest int less than or equal to the maximum possible value of the knapsack.
 		 */
 		public int discreteKnapsack(int[] weights, int[] values, int capacity)
 		{
@@ -60,7 +64,12 @@ public class KnapsackImp implements Knapsack
 
 		/**
 		 * Implementation of fractional Knapsack using a greedy approach.
-		 *
+		 * Choose whichever item gives us the most price per weight unit as
+		 * each point. 
+ 		 * @param weights the array of weights of each type of product available.
+  		 * @param values the array of values of each type of product available.
+  		 * @param capacity the size of the knapsack
+                 * @return the greatest int less than or equal to the maximum possible value of the knapsack.
 		 */
 		public int fractionalKnapsack(int[] weights, int[] values, int capacity)
 		{
@@ -72,7 +81,7 @@ public class KnapsackImp implements Knapsack
 			{
 				pricePerWeight[i] = new Pair(i, (double)(values[i])/(double)(weights[i]));	
 			}
-			Arrays.sort(pricePerWeight); //uses quick sort to sort in ascending order.
+			Arrays.sort(pricePerWeight);  //uses quick sort to sort in ascending order.
 			
 			double currentWeight = 0d;
 			double currentVal = 0d;
@@ -80,7 +89,7 @@ public class KnapsackImp implements Knapsack
 			
 			for(int i = arrSiz-1; i >= 0; i--)
 			{
-				if((double)weights[pricePerWeight[i].index] > remainingCap)
+				if((double)weights[pricePerWeight[i].index] > remainingCap) 
 				{
 					currentVal += pricePerWeight[i].val*remainingCap;
 					break;
