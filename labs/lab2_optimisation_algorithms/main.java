@@ -1,6 +1,6 @@
 public class main
 {
-	public static void main(String[] args)
+	public static void main(String args[])
 	{
 		Knapsack k = new KnapsackImp();
 		int val[] = {60,100,120};
