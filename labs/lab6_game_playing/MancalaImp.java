@@ -31,6 +31,7 @@ public class MancalaImp implements MancalaAgent
 	{
 		this.depth = 7;
 		this.agentName = "MANC_HAL by abraram";
+		this.bestMoveList = new LinkedList<MoveScorePair>();
 	}
 
 	public MancalaImp(int inDepth, String inAgentName)
@@ -39,11 +40,12 @@ public class MancalaImp implements MancalaAgent
 			this.depth = inDepth;
 		else
 		{
-			//System.err.println("invalid depth! set to defaults [6]");
+			System.err.println("invalid depth! set to defaults [7]");
 			this.depth = 7;
 		}
 	
 		this.agentName = inAgentName;
+		this.bestMoveList = new LinkedList<MoveScorePair>();
 	}
 
 
@@ -151,8 +153,8 @@ public class MancalaImp implements MancalaAgent
  	*/
  	public int move(int[] board)
  	{
- 		this.bestMoveList = new LinkedList<MoveScorePair>();
-		int bestScore = alphaBetaMiniMax(board, MAXPLAYER, depth);
+ 		bestMoveList.clear();
+		int bestScore = alphaBetaMiniMax(board, MAXPLAYER, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		int bestMove = 0;
 		for(int i = 0; i < bestMoveList.size(); i++)
 		{
@@ -170,10 +172,12 @@ public class MancalaImp implements MancalaAgent
  	 * @param board the state of the game board when calling minimax
  	 * @param player the player whose turn it is, MIN player or MAX player.
  	 * @param d the depth of the depth limited search to be terminated at.
+	 * @param a alpha
+	 * @param b beta
  	 * @param bestMoveList a list of move-score pairs, to be sorted later.
  	 * @return the best move which maximises score for the player.
  	 */
-	int alphaBetaMiniMax(int board[], int player, int d)
+	int alphaBetaMiniMax(int board[], int player, int d, int a, int b)
 	{
 		int winner = checkForWin(board); //-1 if no one, 1 if player, 2 if opp. 3 if tie.
 		//if game state is inactive.
@@ -186,6 +190,7 @@ public class MancalaImp implements MancalaAgent
 		int bestVal = 0; int boardCpy[];
 		//max depth reached, but game is still active.. Return the best move now.
 		if(d == 0) {return evalScore(board);}
+		
 		if(player == MAXPLAYER) 
 		{
 			bestVal = Integer.MIN_VALUE;
@@ -196,12 +201,16 @@ public class MancalaImp implements MancalaAgent
 				boardCpy = board.clone();
 				boolean secondMove = playerMove(boardCpy, i); //MAXPLAYER gets another move.
 				if(secondMove)
-					bestVal = Integer.max(alphaBetaMiniMax(boardCpy, MAXPLAYER, d-1), bestVal);
+					bestVal = Integer.max(alphaBetaMiniMax(boardCpy, MAXPLAYER, d-1, a, b), bestVal);
 				else
-					bestVal = Integer.max(alphaBetaMiniMax(boardCpy, MINPLAYER, d-1), bestVal);
-				
+					bestVal = Integer.max(alphaBetaMiniMax(boardCpy, MINPLAYER, d-1, a, b), bestVal);
+
+				a = Integer.max(bestVal, a);
+
 				if(d == this.depth)
 					this.bestMoveList.add(new MoveScorePair(i, bestVal));
+
+				if(b <= a){break;} //beta-cutoff.
 
 			}
 		}
@@ -215,9 +224,12 @@ public class MancalaImp implements MancalaAgent
 				boardCpy = board.clone();
 				boolean secondMove = opponentMove(boardCpy, i); //MAXPLAYER gets another move.
 				if(secondMove)
-					bestVal = Integer.min(alphaBetaMiniMax(boardCpy, MINPLAYER, d-1), bestVal);
+					bestVal = Integer.min(alphaBetaMiniMax(boardCpy, MINPLAYER, d-1, a, b), bestVal);
 				else
-					bestVal = Integer.min(alphaBetaMiniMax(boardCpy, MAXPLAYER, d-1), bestVal);
+					bestVal = Integer.min(alphaBetaMiniMax(boardCpy, MAXPLAYER, d-1, a, b), bestVal);
+
+				b = Integer.min(bestVal, b);
+				if(b <= a) {break;} //alpha cutoff.
 			}
 		}
 		
@@ -287,7 +299,7 @@ public class MancalaImp implements MancalaAgent
 	*/
 	public void reset()
 	{
-
+		bestMoveList.clear();
 	}
 
 
