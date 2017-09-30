@@ -164,12 +164,12 @@ public class GameStatus{
   //runs a basic game between two random players
   public static void main(String[] args)
   {
-    int testCases = 1000;
+    int testCases = 100;
     Map<String, Integer> wins = new HashMap<String, Integer>();
 
     for(int i = 0; i < testCases; i++)
     {
-    	String winner = play(new RandomAgent(), new MancalaImp());
+    	String winner = play(new MancalaImp(), new RandomAgent());
 
 	if(wins.get(winner) == null)
 		wins.put(winner, 1);

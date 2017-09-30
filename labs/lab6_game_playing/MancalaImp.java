@@ -10,9 +10,6 @@ public class MancalaImp implements MancalaAgent
 
 	private static final int MAXPLAYER = 1;
 	private static final int MINPLAYER = 2;
-
-
-	
 	
 	private class MoveScorePair
 	{
@@ -25,14 +22,14 @@ public class MancalaImp implements MancalaAgent
 		}
 	}
 
-	private int depth;
 	private String agentName;
+	private int depth;
 	List<MoveScorePair> bestMoveList;
 	
 	//constructors.
 	public MancalaImp()
 	{
-		this.depth = 8;
+		this.depth = 7;
 		this.agentName = "MANC_HAL by abraram";
 	}
 
@@ -42,10 +39,10 @@ public class MancalaImp implements MancalaAgent
 			this.depth = inDepth;
 		else
 		{
-			System.err.println("invalid depth! set to defaults [6]");
-			this.depth = 6;
+			//System.err.println("invalid depth! set to defaults [6]");
+			this.depth = 7;
 		}
-
+	
 		this.agentName = inAgentName;
 	}
 
@@ -66,7 +63,7 @@ public class MancalaImp implements MancalaAgent
 		for(int i = 0; i < 6; i++)
 		{
 			if(b[i] == 0){
-				score+=3*b[12-i]; //number of seeds that could potentially be captured.
+				score+=2*b[12-i]; //number of seeds that could potentially be captured.
 			}
 			seedsPlayerOne+=b[i];
 		}
@@ -258,7 +255,6 @@ public class MancalaImp implements MancalaAgent
 	 * @param i the movement selected by the player.
 	 */
 	private boolean opponentMove(int[] board, int mv) {
-		// TODO Auto-generated method stub
 	       int i = mv;
 	       while(board[mv]>0){
 	        i=i==5?7:i==13?0:i+1;
@@ -283,7 +279,7 @@ public class MancalaImp implements MancalaAgent
 	*/
 	public String name()
 	{
-		  return agentName;
+		  return this.agentName;
 	}
 
 	/**
