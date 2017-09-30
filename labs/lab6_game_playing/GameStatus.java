@@ -164,7 +164,7 @@ public class GameStatus{
   //runs a basic game between two random players
   public static void main(String[] args)
   {
-    int testCases = 10000;
+    int testCases = 1000;
     Map<String, Integer> wins = new HashMap<String, Integer>();
 
     for(int i = 0; i < testCases; i++)

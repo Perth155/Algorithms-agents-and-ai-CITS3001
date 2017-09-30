@@ -29,7 +29,7 @@ public class MancalaImp implements MancalaAgent
 	//constructors.
 	public MancalaImp()
 	{
-		this.depth = 7;
+		this.depth = 9;
 		this.agentName = "MANC_HAL by abraram";
 		this.bestMoveList = new LinkedList<MoveScorePair>();
 	}
@@ -40,7 +40,6 @@ public class MancalaImp implements MancalaAgent
 			this.depth = inDepth;
 		else
 		{
-			System.err.println("invalid depth! set to defaults [7]");
 			this.depth = 7;
 		}
 	
@@ -158,7 +157,6 @@ public class MancalaImp implements MancalaAgent
 		int bestMove = 0;
 		for(int i = 0; i < bestMoveList.size(); i++)
 		{
-			//System.out.println(bestMoveList.get(i).move + " - " + bestMoveList.get(i).score);
 			if(bestMoveList.get(i).score == bestScore)
 				bestMove = bestMoveList.get(i).move;
 		}
@@ -201,11 +199,11 @@ public class MancalaImp implements MancalaAgent
 				boardCpy = board.clone();
 				boolean secondMove = playerMove(boardCpy, i); //MAXPLAYER gets another move.
 				if(secondMove)
-					bestVal = Integer.max(alphaBetaMiniMax(boardCpy, MAXPLAYER, d-1, a, b), bestVal);
+					bestVal = Math.max(alphaBetaMiniMax(boardCpy, MAXPLAYER, d-1, a, b), bestVal);
 				else
-					bestVal = Integer.max(alphaBetaMiniMax(boardCpy, MINPLAYER, d-1, a, b), bestVal);
+					bestVal = Math.max(alphaBetaMiniMax(boardCpy, MINPLAYER, d-1, a, b), bestVal);
 
-				a = Integer.max(bestVal, a);
+				a = Math.max(bestVal, a);
 
 				if(d == this.depth)
 					this.bestMoveList.add(new MoveScorePair(i, bestVal));
@@ -224,11 +222,11 @@ public class MancalaImp implements MancalaAgent
 				boardCpy = board.clone();
 				boolean secondMove = opponentMove(boardCpy, i); //MAXPLAYER gets another move.
 				if(secondMove)
-					bestVal = Integer.min(alphaBetaMiniMax(boardCpy, MINPLAYER, d-1, a, b), bestVal);
+					bestVal = Math.min(alphaBetaMiniMax(boardCpy, MINPLAYER, d-1, a, b), bestVal);
 				else
-					bestVal = Integer.min(alphaBetaMiniMax(boardCpy, MAXPLAYER, d-1, a, b), bestVal);
+					bestVal = Math.min(alphaBetaMiniMax(boardCpy, MAXPLAYER, d-1, a, b), bestVal);
 
-				b = Integer.min(bestVal, b);
+				b = Math.min(bestVal, b);
 				if(b <= a) {break;} //alpha cutoff.
 			}
 		}
