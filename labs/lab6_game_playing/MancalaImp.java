@@ -29,7 +29,7 @@ public class MancalaImp implements MancalaAgent
 	//constructors.
 	public MancalaImp()
 	{
-		this.depth = 9;
+		this.depth = 8;
 		this.agentName = "MANC_HAL by abraram";
 		this.bestMoveList = new LinkedList<MoveScorePair>();
 	}
