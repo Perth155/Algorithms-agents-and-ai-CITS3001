@@ -32,7 +32,7 @@ public class Mancala{
     board = new int[14];
     for(int i = 0; i<6; i++) board[i] = 3;
     for(int i = 7; i<13; i++) board[i] = 3;
-    report.write("game started...");
+    report.write("game started...\n");
     report.write(boardString());
     boolean oneTurn = true;
     while(!gameOver()){
