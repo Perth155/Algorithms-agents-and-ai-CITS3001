@@ -1,4 +1,5 @@
-import java.io.StringWriter;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * A static class for executing a game of Mancala.
@@ -6,7 +7,7 @@ import java.io.StringWriter;
  * The Mancala class coordinate one game between the two agents and reports the result.
  * Used for CITS301 at the university of Western Australia.
  **/
-public class Mancala{
+public class GameStatus{
   //board[6] is the store of agent 1
   //board[13] is the store of agent 2
   //board[i+1 % 14] is the next house anticlockwise from board[i]
@@ -26,22 +27,22 @@ public class Mancala{
    * @param a2 an implementation of MancalaAgent
    * @return the difference,x, in score. Agent 1 will have 18+x/2 points. Agent 2 will have 18-x/2 points.
    **/ 
-  public static int play(MancalaAgent a1, MancalaAgent a2, StringWriter report){
+  public static String play(MancalaAgent a1, MancalaAgent a2){
     agent1 = a1; agent1.reset();
     agent2 = a2; agent2.reset();
     board = new int[14];
     for(int i = 0; i<6; i++) board[i] = 3;
     for(int i = 7; i<13; i++) board[i] = 3;
-    report.write("game started...\n");
-    report.write(boardString());
+    //report.write("game started...\n");
+    //report.write(boardString());
     boolean onesTurn = true;
     while(!gameOver()){
      if(onesTurn){
       int mv = agent1.move(board.clone());
-      report.write(agent1.name()+" plays move "+mv+"\n");
+      //report.write(agent1.name()+" plays move "+mv+"\n");
       if(board[mv]==0 || mv<0 || mv>5){
         forfeit(1);
-        report.write("Illegal move! Forfeit!\n");
+        //report.write("Illegal move! Forfeit!\n");
       }
       else{ 
        int i = mv;
@@ -60,10 +61,10 @@ public class Mancala{
      }
      else{
       int mv = 7+agent2.move(invertBoard());
-      report.write(agent2.name()+" plays move "+mv+"\n");
+      //report.write(agent2.name()+" plays move "+mv+"\n");
       if(board[mv]==0 || mv<7 || mv>12){
         forfeit(2);
-        report.write("Illegal move! Forfeit!\n");
+        //report.write("Illegal move! Forfeit!\n");
       }
       else{ 
        int i = mv;
@@ -80,32 +81,18 @@ public class Mancala{
        if(i!=13) onesTurn = true;
       }
      }
-     report.write(boardString());
+     //report.write(boardString());
     }
     gameOver();
-    report.write("Game Over!\nFinal Board\n");
+    //report.write("Game Over!\nFinal Board\n");
     if(board[6]>board[13])
-      report.write(agent1.name()+" wins: "+board[6]+" to "+board[13]+"\n");
+      return agent1.name();
     else if(board[6]<board[13])
-      report.write(agent2.name()+" wins: "+board[13]+" to "+board[6]+"\n");
-    else report.write("Match drawn: 18 all\n");
-    return board[6]-board[13];
+      return agent2.name();
+    else 
+      return "Tied";
+    //return board[6]-board[13];
   }
-
-
-
-  /**
-   * Conducts a play between agent 1 and agent 2 and reports 
-   * the final score (agent1's score- agent2's score).
-   * The Game log is printed to stdout
-   * @return the difference,x, in score. Agent 1 will have 18+x/2 points. Agent 2 will have 18-x/2 points.
-   **/ 
-  public static int play(MancalaAgent a1, MancalaAgent a2){
-    StringWriter sw = new StringWriter();
-    int res = play(a1, a2,sw);
-    System.out.println(sw.toString());
-    return res;
-  }  
 
   /**
    * Produces a string representation of the game in the form:
@@ -175,8 +162,30 @@ public class Mancala{
 
 
   //runs a basic game between two random players
-  public static void main(String[] args){
-    play(new RandomAgent(), new MancalaImp());
+  public static void main(String[] args)
+  {
+    int testCases = 1000;
+    Map<String, Integer> wins = new HashMap<String, Integer>();
+
+    for(int i = 0; i < testCases; i++)
+    {
+    	String winner = play(new RandomAgent(), new MancalaImp());
+
+	if(wins.get(winner) == null)
+		wins.put(winner, 1);
+	else
+	{
+		int winNum = wins.get(winner)+1;	
+		wins.put(winner, winNum);
+	}
+	
+    }
+    for(String objname:wins.keySet()) {
+    	System.out.print(objname + " = ");
+    	System.out.print(wins.get(objname)+"/"+testCases + "      ");
+	double perc = ((double)wins.get(objname)/(double)testCases)*100;
+        System.out.print(perc + "%\n");
+    }
   }
 
 }

@@ -42,7 +42,7 @@ public class RandomAgent implements MancalaAgent{
    * @return a hardcoded string, the name of the agent.
    */
   public String name(){
-	  String randomAgent = "RandomAgent# "+agentNumber;
+	  String randomAgent = "RandomAgent";
 	  return randomAgent;
   }
 

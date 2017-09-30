@@ -1,3 +1,6 @@
+import java.util.List;
+import java.util.LinkedList;
+
 /**
  * An AI for a game of Mancala implemented using a minimax search algorithm.
  * @author Abrar Amin (21518928@student.uwa.edu.au)
@@ -5,28 +8,45 @@
 public class MancalaImp implements MancalaAgent
 {
 
+	private static final int MAXPLAYER = 1;
+	private static final int MINPLAYER = 2;
+
+
+	
+	
+	private class MoveScorePair
+	{
+		int move;
+		int score;
+		MoveScorePair(int inMove, int inScore)
+		{
+			this.move = inMove;
+			this.score = inScore;
+		}
+	}
+
 	private int depth;
 	private String agentName;
-
+	List<MoveScorePair> bestMoveList;
+	
+	//constructors.
+	public MancalaImp()
+	{
+		this.depth = 8;
+		this.agentName = "MANC_HAL by abraram";
+	}
 
 	public MancalaImp(int inDepth, String inAgentName)
 	{
 		if(inDepth > 0)
-			depth = inDepth;
+			this.depth = inDepth;
 		else
 		{
 			System.err.println("invalid depth! set to defaults [6]");
-			depth = 6;
+			this.depth = 6;
 		}
 
-		agentName = inAgentName;
-	}
-
-
-	public MancalaImp()
-	{
-		depth = 6;
-		agentName = "MANC_HAL by abraram";
+		this.agentName = inAgentName;
 	}
 
 
@@ -61,6 +81,8 @@ public class MancalaImp implements MancalaAgent
 		
 		//which player has more seeds on their board..
 		score+=2*(seedsPlayerOne - seedsPlayerTwo);
+
+		return score;
 	}
 
 	private int getGameWinner(int[] b)
@@ -132,28 +154,128 @@ public class MancalaImp implements MancalaAgent
  	*/
  	public int move(int[] board)
  	{
-		int winner = checkForWin(int[] board); //-1 if no one, 1 if player, 2 if opp. 3 if tie.
-		//if game state is inactive.
-		if(winner != -1){
-			if(winner == 1) 
-				return Integer.MAX_VALUE;
-			else if(winner == 2)
-				return Integer.MIN_VALUE;
-			else
-				return 0;
-		}
-		//max depth reached, but game is still active.. Return the best move now.
-		if(depth = 0)
+ 		this.bestMoveList = new LinkedList<MoveScorePair>();
+		int bestScore = alphaBetaMiniMax(board, MAXPLAYER, depth);
+		int bestMove = 0;
+		for(int i = 0; i < bestMoveList.size(); i++)
 		{
-			return generateScore(int[] board);
+			//System.out.println(bestMoveList.get(i).move + " - " + bestMoveList.get(i).score);
+			if(bestMoveList.get(i).score == bestScore)
+				bestMove = bestMoveList.get(i).move;
 		}
-		
-		
-		
-		
-		return 0;
+		return bestMove;
 	}
 
+
+ 	/**
+ 	 * An implementation of a mini-max algorithm that uses alpha-Beta pruning and a 
+ 	 * depth limited searh in combination with an evaluation function to  
+ 	 * @param board the state of the game board when calling minimax
+ 	 * @param player the player whose turn it is, MIN player or MAX player.
+ 	 * @param d the depth of the depth limited search to be terminated at.
+ 	 * @param bestMoveList a list of move-score pairs, to be sorted later.
+ 	 * @return the best move which maximises score for the player.
+ 	 */
+	int alphaBetaMiniMax(int board[], int player, int d)
+	{
+		int winner = checkForWin(board); //-1 if no one, 1 if player, 2 if opp. 3 if tie.
+		//if game state is inactive.
+		if(winner != -1)
+		{
+			if(winner == 1) {return Integer.MAX_VALUE;}
+			else if(winner == 2) {return Integer.MIN_VALUE;}
+			else {return 0;}
+		}
+		int bestVal = 0; int boardCpy[];
+		//max depth reached, but game is still active.. Return the best move now.
+		if(d == 0) {return evalScore(board);}
+		if(player == MAXPLAYER) 
+		{
+			bestVal = Integer.MIN_VALUE;
+			for(int i = 0; i < 6; i++)
+			{
+				//nothing to move.
+				if(board[i] == 0) {continue;}
+				boardCpy = board.clone();
+				boolean secondMove = playerMove(boardCpy, i); //MAXPLAYER gets another move.
+				if(secondMove)
+					bestVal = Integer.max(alphaBetaMiniMax(boardCpy, MAXPLAYER, d-1), bestVal);
+				else
+					bestVal = Integer.max(alphaBetaMiniMax(boardCpy, MINPLAYER, d-1), bestVal);
+				
+				if(d == this.depth)
+					this.bestMoveList.add(new MoveScorePair(i, bestVal));
+
+			}
+		}
+		else if(player == MINPLAYER) 
+		{
+			bestVal = Integer.MAX_VALUE;
+			for(int i = 7; i < 13; i++)
+			{
+				//nothing to move.
+				if(board[i] == 0) {continue;}
+				boardCpy = board.clone();
+				boolean secondMove = opponentMove(boardCpy, i); //MAXPLAYER gets another move.
+				if(secondMove)
+					bestVal = Integer.min(alphaBetaMiniMax(boardCpy, MINPLAYER, d-1), bestVal);
+				else
+					bestVal = Integer.min(alphaBetaMiniMax(boardCpy, MAXPLAYER, d-1), bestVal);
+			}
+		}
+		
+		return bestVal;
+	}
+	
+	
+	/**
+	 * Update the gameboard accordingly after player has moved.
+	 * @param boardCpy copy of the game board.
+	 * @param i the movement selected by the player.
+	 */
+	private boolean playerMove(int[] board, int mv) 
+	{
+	       int i = mv;
+	       while(board[mv]>0){
+	        i=i==12?0:i+1;
+	        board[i]++; board[mv]--;
+	       }
+	       if(i<6 && board[i]==1 && board[12-i]>0){
+	         board[6]+=board[12-i]; 
+	         board[12-i]=0;
+	         board[6]+=board[i];
+	         board[i]=0;
+	       }
+	       if(i!=6) 
+	    	   return false;
+		return true;
+	}
+	
+	
+	/**
+	 * Update the gameboard accordingly after opponent has moved.
+	 * @param boardCpy copy of the game board.
+	 * @param i the movement selected by the player.
+	 */
+	private boolean opponentMove(int[] board, int mv) {
+		// TODO Auto-generated method stub
+	       int i = mv;
+	       while(board[mv]>0){
+	        i=i==5?7:i==13?0:i+1;
+	        board[i]++; board[mv]--;
+	       }
+	       if(i<13 && i>6 && board[i]==1 && board[12-i]>0){
+	         board[13]+=board[12-i]; 
+	         board[12-i]=0;
+	         board[13]+=board[i];
+	         board[i] = 0;
+	       }
+	       if(i!=13){return false;}
+	       return true;
+	}
+
+
+	
 
 	/**
 	* The agents name.
