@@ -1,5 +1,6 @@
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Scanner;
 
 /**
  * A static class for executing a game of Mancala.
@@ -164,8 +165,20 @@ public class GameStatus{
   //runs a basic game between two random players
   public static void main(String[] args)
   {
-    int testCases = 10000;
+    Scanner scin = new Scanner(System.in);
+    System.out.println("Number of games to be played : ");
+    int testCases = scin.nextInt();
+    scin.close();
+    
+    if(testCases < 1)
+    {
+	    System.err.println("Invalid Number of test cases!");
+	    System.exit(1);
+    }
+
     Map<String, Integer> wins = new HashMap<String, Integer>();
+
+    System.out.println("------results------");
 
     for(int i = 0; i < testCases; i++)
     {
